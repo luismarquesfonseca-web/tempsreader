@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private TextView status;
+    private TextView updateTime;
     private final TextView[] names = new TextView[4];
     private final TextView[] temps = new TextView[4];
     private final TextView[] hums = new TextView[4];
@@ -60,8 +61,14 @@ public class MainActivity extends Activity {
 
         LinearLayout header = new LinearLayout(this);
         header.setGravity(Gravity.CENTER_VERTICAL);
+
         status = tv("●  Connecting", 13, MUTED, true);
         header.addView(status, new LinearLayout.LayoutParams(0, 36, 1));
+
+        updateTime = tv("Last update: --", 10, MUTED, false);
+        updateTime.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+        header.addView(updateTime, new LinearLayout.LayoutParams(0, 36, 1));
+
         root.addView(header);
 
         GridLayout grid = new GridLayout(this);
@@ -140,10 +147,18 @@ public class MainActivity extends Activity {
 
                 if (!s.isNull("temperature"))
                     temps[i].setText(String.format(Locale.US, "%.1f°C", s.optDouble("temperature")));
+                else
+                    temps[i].setText("--°C");
+
                 if (!s.isNull("humidity"))
                     hums[i].setText(String.format(Locale.US, "Humidity  %.0f%%", s.optDouble("humidity")));
+                else
+                    hums[i].setText("Humidity  --%");
+
                 if (!s.isNull("battery"))
                     batts[i].setText(String.format(Locale.US, "Battery  %.0f%%", s.optDouble("battery")));
+                else
+                    batts[i].setText("Battery  --%");
 
                 online++;
             } catch (Exception ignored) {}
@@ -151,5 +166,13 @@ public class MainActivity extends Activity {
 
         status.setText("●  " + online + "/4");
         status.setTextColor(online > 0 ? GREEN : MUTED);
+
+        if (updated > 0) {
+            java.text.SimpleDateFormat fmt =
+                    new java.text.SimpleDateFormat("dd/MM HH:mm:ss", Locale.getDefault());
+            updateTime.setText("Last update: " + fmt.format(new java.util.Date(updated * 1000L)));
+        } else {
+            updateTime.setText("Last update: --");
+        }
     }
 }

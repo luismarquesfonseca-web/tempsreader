@@ -33,3 +33,5 @@ JSON expected at the URL:
     {"slot":3,"name":"Mining Room","temperature":34.2,"humidity":31,"battery":76}
   ]
 }
+
+Version 2 changes: null readings are displayed as --, and the header shows the server's last-update timestamp.
